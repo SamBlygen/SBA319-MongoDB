@@ -1,11 +1,12 @@
 import express from 'express';
 import 'dotenv/config';
-import mongoose from 'mongoose';
-import connected from './db.js';
+import connectDb from './db.js';
 import locationsRouter from './routes/locations.js';
 import usersRouter from './routes/users.js';
 import weatherUpdatesRouter from './routes/weatherUpdates.js';
-import data from './models/weather.js';
+import Data from './models/weather.js';
+
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -13,18 +14,14 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 
-connected();
-await mongoose.connect(process.env.ATLAS_URI)
+
+connectDb()
 
 app.get('/', async (req, res) => {
-  try {
-   
-    const results = await data.find({}).limit(20);
-    res.status(200).json(results);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching weather updates', error: error.message });
-  }
-});
+  const results = await Data.find({}).limit(5)
+  res.send(results)
+})
+
 
 
 

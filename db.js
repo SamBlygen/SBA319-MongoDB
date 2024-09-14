@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
 
-const connected = async () => {
+const connectDb = async () => {
   try {
-    await mongoose.connect(process.env.ATLAS_URI);
-    console.log('Connected to MongoDB!');
-  } catch (e) {
-    console.error('Error connecting to MongoDB:', e.message);
+      await mongoose.connect(process.env.ATLAS_URI)
+      console.log('MongoDB connected...')
+  } catch(e) {
+      console.log(e)
   }
-};
+}
 
-export default connected;
+export default connectDb

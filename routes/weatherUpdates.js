@@ -1,12 +1,12 @@
 import express from 'express';
-import data from '../models/weather.js'; 
+import Data from '../models/weather.js'; // Import the Data model
 
 const router = express.Router();
 
-
-router.post('/weather', async (req, res) => {
+// CREATE - Add new weather data
+router.post('/', async (req, res) => {
   try {
-    const newData = new data(req.body);
+    const newData = new Data(req.body);
     const savedData = await newData.save();
     res.status(201).json(savedData);
   } catch (err) {
@@ -14,20 +14,20 @@ router.post('/weather', async (req, res) => {
   }
 });
 
-
-router.get('/weather', async (req, res) => {
+// READ - Get all weather data
+router.get('/', async (req, res) => {
   try {
-    const weatherData = await data.find(); 
+    const weatherData = await Data.find(); // Fetch all data
     res.status(200).json(weatherData);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-
-router.get('/weather/:id', async (req, res) => {
+// READ - Get weather data by ID
+router.get('/:id', async (req, res) => {
   try {
-    const weatherData = await data.findById(req.params.id);
+    const weatherData = await Data.findById(req.params.id);
     if (!weatherData) {
       return res.status(404).json({ message: 'Weather data not found' });
     }
@@ -37,9 +37,10 @@ router.get('/weather/:id', async (req, res) => {
   }
 });
 
-router.put('/weather/:id', async (req, res) => {
+// UPDATE - Update weather data by ID
+router.put('/:id', async (req, res) => {
   try {
-    const updatedData = await data.findByIdAndUpdate(
+    const updatedData = await Data.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true, runValidators: true }
@@ -53,10 +54,10 @@ router.put('/weather/:id', async (req, res) => {
   }
 });
 
-
-router.delete('/weather/:id', async (req, res) => {
+// DELETE - Delete weather data by ID
+router.delete('/:id', async (req, res) => {
   try {
-    const deletedData = await data.findByIdAndDelete(req.params.id);
+    const deletedData = await Data.findByIdAndDelete(req.params.id);
     if (!deletedData) {
       return res.status(404).json({ message: 'Weather data not found' });
     }

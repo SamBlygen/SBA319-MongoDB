@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-
+// Define the schema for weather updates
 const dataSchema = new mongoose.Schema({
   coordinates: {
     type: [Number],
@@ -22,9 +22,11 @@ const dataSchema = new mongoose.Schema({
   }
 });
 
-dataSchema.index({coordinates:1});
-dataSchema.index({airTemperature:1});
-dataSchema.index({sections:1});
+// Adding indexes for optimization
+dataSchema.index({ coordinates: 1 });
+dataSchema.index({ airTemperature: 1 });
+dataSchema.index({ sections: 1 });
 
-const data = mongoose.model('Data', dataSchema);
-export default data;
+// Create and export model
+const Data = mongoose.model('Data', dataSchema,'data');
+export default Data;
