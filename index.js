@@ -1,7 +1,7 @@
 import express from 'express';
 import 'dotenv/config';
 import connectDb from './db.js';
-import locationsRouter from './routes/locations.js';
+import commentsRouter from './routes/comments.js';
 import usersRouter from './routes/users.js';
 import weatherUpdatesRouter from './routes/weatherUpdates.js';
 import Data from './models/weather.js';
@@ -25,7 +25,7 @@ app.get('/', async (req, res) => {
 
 
 
-app.use('/locations', locationsRouter);
+app.use('/comments', commentsRouter);
 app.use('/users', usersRouter);
 app.use('/weatherUpdates', weatherUpdatesRouter);
 
