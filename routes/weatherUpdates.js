@@ -3,6 +3,8 @@ import Data from '../models/weather.js'; // Import the Data model
 
 const router = express.Router();
 
+
+
 // CREATE - Add new weather data
 router.post('/', async (req, res) => {
   try {
