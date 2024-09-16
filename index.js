@@ -30,9 +30,9 @@ app.get('/', async (req, res) => {
 app.get('/movie', async (req, res) => { 
   try {
     const results = await Movie.find({}).limit(10); 
-    res.status(200).json(results); // 200 OK
+    res.status(200).json(results); 
   } catch (error) {
-    res.status(500).json({ message: 'Error retrieving movies', error }); // 500 Internal Server Error
+    res.status(500).json({ message: 'Error retrieving movies', error }); 
   }
 });
 
@@ -40,6 +40,10 @@ app.get('/movie', async (req, res) => {
 app.get('/comment', async (req, res) => {
   const results = await Comment.find({}).limit(5)
   res.send(results)
+});
+
+app.use((err, req, res, next)=>{
+  res.send('seems like we messed up somewhere');
 })
 
 
