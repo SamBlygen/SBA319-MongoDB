@@ -1,52 +1,54 @@
-import express from 'express';
-import movie from '../models/movies.js';
-import Movie from '../models/movies.js';
+import express, { Router } from 'express';
+import Movie from '../models/movies.js';  
 
 const router = express.Router();
 
-router.get('/', async (req, res) => { 
+// Get all movies
+router.get('/movie', async (req, res) => { 
   try {
-    const users = await movie.find(); 
-    res.send(users);
+    const results = await Movie.find({}).limit(10); 
+    res.status(200).json(results); // 200 OK
   } catch (error) {
-    res.send({ message: 'error fetching movies', error });
+    res.status(500).json({ message: 'Error retrieving movies', error }); // 500 Internal Server Error
   }
 });
 
+
+// Post a new movie
 router.post('/movie', async (req, res) => {
   try {
-    const newMovie = new movie(req.body);
+    const newMovie = new Movie(req.body);
     await newMovie.save();
-    res.send(newMovie);
+    res.status(201).json(newMovie); 
   } catch (error) {
-    res.send({ message: 'Error creating movies', error });
+    res.status(400).json({ message: 'Error creating movie', error });
   }
 });
 
+// Patch a movie by ID
 router.patch('/:id', async (req, res) => {
   try {
-    const Movie = await movie.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!Movie) {
-      return res.send({ message: 'Movie not found' });
+    const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!updatedMovie) {
+      return res.status(404).json({ message: 'Movie not found' }); 
     }
-    res.send(movie);
+    res.status(200).json(updatedMovie); 
   } catch (error) {
-    res.send({ message: 'Error updating movies', error });
+    res.status(400).json({ message: 'Error updating movie', error }); 
   }
 });
 
-// Delete a user by ID
+// Delete a movie by ID
 router.delete('/:id', async (req, res) => {
   try {
-    const movie = await movie.findByIdAndDelete(req.params.id);
-    if (!movie) {
-      return res.send({ message: 'Movie not found' });
+    const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
+    if (!deletedMovie) {
+      return res.status(404).json({ message: 'Movie not found' }); 
     }
-    res.send({ message: 'Movie deleted', user });
+    res.status(200).json({ message: 'Movie deleted', movie: deletedMovie });
   } catch (error) {
-    res.send({ message: 'Error deleting movie', error });
+    res.status(500).json({ message: 'Error deleting movie', error }); 
   }
 });
-
 
 export default router;

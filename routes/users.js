@@ -1,37 +1,36 @@
 import express from 'express';
-import User from '../models/users.js'; // Import the User model, using a different name to avoid conflict
+import User from '../models/users.js'; 
 
 const router = express.Router();
 
+// Get all users
+router.get('/', async (req, res) => {
+  const results = await User.find({}).limit(5)
+  res.send(results)
+})
 
-router.get('/', async (req, res) => { 
-  try {
-    const users = await User.find(); 
-    res.send(users);
-  } catch (error) {
-    res.send({ message: 'Error retrieving users', error });
-  }
-});
 
-router.post('/user', async (req, res) => {
+// Post a new user
+router.post('/', async (req, res) => {
   try {
     const newUser = new User(req.body);
     await newUser.save();
-    res.send(newUser);
+    res.status(201).json(newUser); // 201 Created
   } catch (error) {
-    res.send({ message: 'Error creating user', error });
+    res.status(400).json({ message: 'Error creating user', error }); // 400 Bad Request
   }
 });
 
+// Patch a user by ID
 router.patch('/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!user) {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' }); // 404 Not Found
     }
-    res.send(user);
+    res.status(200).json(user); // 200 OK
   } catch (error) {
-    res.send({ message: 'Error updating user', error });
+    res.status(400).json({ message: 'Error updating user', error }); // 400 Bad Request
   }
 });
 
@@ -40,15 +39,13 @@ router.delete('/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' }); // 404 Not Found
     }
-    res.send({ message: 'User deleted', user });
+    res.status(200).json({ message: 'User deleted', user }); // 200 OK
   } catch (error) {
-    res.send({ message: 'Error deleting user', error });
+    res.status(500).json({ message: 'Error deleting user', error }); // 500 Internal Server Error
   }
 });
 
 export default router;
-
-
 

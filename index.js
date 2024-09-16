@@ -1,13 +1,12 @@
 import express from 'express';
 import 'dotenv/config';
 import connectDb from './db.js';
-// import commentsRouter from './routes/comments.js';
+import commentsRouter from './routes/comments.js';
 import usersRouter from './routes/users.js';
-import movie from './models/movies.js';
+import Movie from './models/movies.js';
 import moviesRouter from './routes/movies.js'
 import User from './models/users.js';
-import mongoose from 'mongoose';
-
+import Comment from './models/comments.js';
 
 
 
@@ -15,6 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
+
 
 
 
@@ -27,20 +27,23 @@ app.get('/', async (req, res) => {
   res.send(results)
 })
 
-app.get('/movies', async (req, res) => { 
+app.get('/movie', async (req, res) => { 
   try {
-    const results = await movie.find({}).limit(10); 
-    res.send(results);
+    const results = await Movie.find({}).limit(10); 
+    res.status(200).json(results); // 200 OK
   } catch (error) {
-    res.status(500).send({ message: 'Error retrieving users', error });
+    res.status(500).json({ message: 'Error retrieving movies', error }); // 500 Internal Server Error
   }
 });
 
 
+app.get('/comment', async (req, res) => {
+  const results = await Comment.find({}).limit(5)
+  res.send(results)
+})
 
 
-
-// app.use('/comments', commentsRouter);
+app.use('/comments', commentsRouter);
 app.use('/users', usersRouter);
 app.use('/movie', moviesRouter);
 
