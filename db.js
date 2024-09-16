@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
 
+
 const connectDb = async () => {
   try {
       await mongoose.connect(process.env.ATLAS_URI)
@@ -10,21 +11,9 @@ const connectDb = async () => {
   }
 }
 
-const mflixDb = async () =>{
- try{
-  await mongoose.createConnection(process.env.DB_URI)
-  console.log('2nd connection ')
- } catch{
-console.log("Error")
- }
-
-}
 
 
+export default connectDb
 
 
-
-
-
-export {mflixDb, connectDb}
 

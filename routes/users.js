@@ -1,33 +1,54 @@
 import express from 'express';
-import User from '../models/users.js'
+import User from '../models/users.js'; // Import the User model, using a different name to avoid conflict
+
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
 
+router.get('/', async (req, res) => { 
   try {
-    const newUser = new User({ name, email, password });
-    await newUser.save();
-    res.status(201).send({ message: 'User registered successfully', newUser });
+    const users = await User.find(); 
+    res.send(users);
   } catch (error) {
-    res.status(500).send({ message: 'Error registering user', error });
+    res.send({ message: 'Error retrieving users', error });
   }
 });
 
-// Get all users
-router.get('/', async (req, res) => {
+router.post('/user', async (req, res) => {
   try {
-    const users = await User.find({});
-    res.status(200).send(users);
+    const newUser = new User(req.body);
+    await newUser.save();
+    res.send(newUser);
   } catch (error) {
-    res.status(500).send({ message: 'Error retrieving users', error });
+    res.send({ message: 'Error creating user', error });
+  }
+});
+
+router.patch('/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+    res.send(user);
+  } catch (error) {
+    res.send({ message: 'Error updating user', error });
+  }
+});
+
+// Delete a user by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+    res.send({ message: 'User deleted', user });
+  } catch (error) {
+    res.send({ message: 'Error deleting user', error });
   }
 });
 
 export default router;
-
-
-
 
 
 
